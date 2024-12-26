@@ -21,8 +21,8 @@ const prisma = new PrismaClient();
  * @returns {Object} - Objeto com os dados do cargo recém-criado.
  * @throws {Error} - Lança erro em caso de falha ao criar o cargo.
  */
-export const createCargo = async (req, res) => {
-  const { nome, descricao, salarioBase, status } = req.body;
+export const createCargo = async (body) => {
+  const { nome, descricao, salarioBase, status } = body;
   try {
     const cargo = await prisma.cargos.create({
       data: {
