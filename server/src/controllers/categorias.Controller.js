@@ -1,34 +1,35 @@
-import express from 'express';
-import * as categoriaService from '../service/categorias.Service.js'; // Supondo que a lógica do serviço esteja no arquivo categoriaService.js
-
-const router = express.Router();
+import * as categoriaService from '../service/categorias.Service.js'; // Importação do serviço
 
 // Criar uma nova categoria
-router.post('/categorias', async (req, res) => {
-  const { nome, descricao } = req.body;
+export const createCategoria = async (req, res) => {
   try {
-    const categoria = await createCategoria({ nome, descricao });
+    console.log("dados recebidos:", req.body);
+    const { nome, descricao } = req.body;
+    if (!nome || !descricao) {
+      return res.status(400).json({ error: 'Nome e descrição são obrigatórios' });
+    }
+    const categoria = await categoriaService.createCategoria({ nome, descricao });
     res.status(201).json(categoria);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-});
+};
 
 // Obter todas as categorias
-router.get('/categorias', async (req, res) => {
+export const getCategorias = async (req, res) => {
   try {
-    const categorias = await getCategorias();
+    const categorias = await categoriaService.getCategorias();
     res.status(200).json(categorias);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+};
 
 // Obter uma categoria pelo ID
-router.get('/categorias/:id', async (req, res) => {
+export const getCategoriaById = async (req, res) => {
   const { id } = req.params;
   try {
-    const categoria = await getCategoriaById(id);
+    const categoria = await categoriaService.getCategoriaById(id);
     if (categoria) {
       res.status(200).json(categoria);
     } else {
@@ -37,13 +38,13 @@ router.get('/categorias/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+};
 
 // Obter uma categoria pelo nome
-router.get('/categorias/nome/:nome', async (req, res) => {
+export const getCategoriaByName = async (req, res) => {
   const { nome } = req.params;
   try {
-    const categoria = await getCategoriaByName(nome);
+    const categoria = await categoriaService.getCategoriaByName(nome);
     if (categoria) {
       res.status(200).json(categoria);
     } else {
@@ -52,29 +53,27 @@ router.get('/categorias/nome/:nome', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+};
 
 // Atualizar uma categoria
-router.put('/categorias/:id', async (req, res) => {
+export const updateCategoria = async (req, res) => {
   const { id } = req.params;
   const { nome, descricao } = req.body;
   try {
-    const categoria = await updateCategoria(id, { nome, descricao });
+    const categoria = await categoriaService.updateCategoria(id, { nome, descricao });
     res.status(200).json(categoria);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-});
+};
 
 // Deletar uma categoria
-router.delete('/categorias/:id', async (req, res) => {
+export const deleteCategoria = async (req, res) => {
   const { id } = req.params;
   try {
-    const categoria = await deleteCategoria(id);
+    const categoria = await categoriaService.deleteCategoria(id);
     res.status(200).json({ message: 'Categoria deletada com sucesso.', categoria });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-});
-
-export default router;
+};

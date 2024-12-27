@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
+
 export const createCategoria = async ({ nome, descricao }) => {
   try {
     const categoria = await prisma.categorias.create({
@@ -9,11 +11,9 @@ export const createCategoria = async ({ nome, descricao }) => {
       },
     });
     return categoria;
-
-  }
-  catch (error) {
-    console.error('Erro ao criar o cargo:', error);
-    throw new Error('Não foi possível criar o cargo. Verifique os dados fornecidos.');
+  } catch (error) {
+    console.error('Erro ao criar a categoria:', error);
+    throw new Error('Não foi possível criar a categoria. Verifique os dados fornecidos.');
   }
 }
 
@@ -21,10 +21,9 @@ export const getCategorias = async () => {
   try {
     const categorias = await prisma.categorias.findMany();
     return categorias;
-  }
-  catch (error) {
-    console.error('Erro ao obter os cargos:', error);
-    throw new Error('Não foi possível obter os cargos.');
+  } catch (error) {
+    console.error('Erro ao obter as categorias:', error);
+    throw new Error('Não foi possível obter as categorias.');
   }
 }
 
@@ -34,22 +33,21 @@ export const getCategoriaById = async (id) => {
       where: { id: Number(id) },
     });
     return categoria;
-  }
-  catch (error) {
-    console.error('Erro ao obter o cargo:', error);
-    throw new Error('Não foi possível obter o cargo.');
+  } catch (error) {
+    console.error('Erro ao obter a categoria:', error);
+    throw new Error('Não foi possível obter a categoria.');
   }
 }
-export const getCargoByName = async (nome) => {
+
+export const getCategoriaByName = async (nome) => {
   try {
     const categoria = await prisma.categorias.findUnique({
       where: { nome: nome },
     });
     return categoria;
-  }
-  catch (error) {
-    console.error('Erro ao obter o cargo:', error);
-    throw new Error('Não foi possível obter o cargo.');
+  } catch (error) {
+    console.error('Erro ao obter a categoria:', error);
+    throw new Error('Não foi possível obter a categoria.');
   }
 }
 
@@ -63,10 +61,9 @@ export const updateCategoria = async (id, { nome, descricao }) => {
       },
     });
     return categoria;
-  }
-  catch (error) {
-    console.error('Erro ao atualizar o cargo:', error);
-    throw new Error('Não foi possível atualizar o cargo. Verifique os dados fornecidos.');
+  } catch (error) {
+    console.error('Erro ao atualizar a categoria:', error);
+    throw new Error('Não foi possível atualizar a categoria. Verifique os dados fornecidos.');
   }
 }
 
@@ -76,9 +73,8 @@ export const deleteCategoria = async (id) => {
       where: { id: Number(id) },
     });
     return categoria;
+  } catch (error) {
+    console.error('Erro ao deletar a categoria:', error);
+    throw new Error('Não foi possível deletar a categoria.');
   }
-  catch (error) {
-    console.error('Erro ao deletar o cargo:', error);
-    throw new Error('Não foi possível deletar o cargo.');
-  }
-} 
+}
