@@ -21,6 +21,7 @@ import dotenv from 'dotenv'; // Carrega variáveis de ambiente do arquivo .env
 
 // Importando as rotas
 import cargoRoutes from './routes/cargoRoutes.js';  // Importa o arquivo de rotas de cargos
+import categoriasRoutes from './routes/categoriasRoutes.js';  // Importa o arquivo de rotas de categorias
 
 dotenv.config(); // Carrega as variáveis de ambiente do arquivo .env
 

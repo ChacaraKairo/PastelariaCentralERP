@@ -9,6 +9,7 @@
 
 import express from 'express';
 import * as cargoController from '../controllers/cargo.Controller.js';
+import { cargoValidator_Create, cargoValidator_Update, cargoValidator_UpdateStatus } from '../validators/cargoValidator.js';
 
 // Agora você pode acessar as funções via cargoController
 
@@ -21,7 +22,7 @@ const router = express.Router();
  * Rota para criar um novo cargo.
  * @route POST /cargos
  */
-router.post('/cargos', cargoController.createCargo);
+router.post('/cargos', cargoValidator_Create, cargoController.createCargo);
 
 /**
  * Rota para obter todos os cargos.
@@ -39,7 +40,7 @@ router.get('/cargos/:id', cargoController.getCargoById);
  * Rota para atualizar um cargo pelo ID.
  * @route PUT /cargos/:id
  */
-router.put('/cargos/:id', cargoController.updateCargo);
+router.put('/cargos/:id', cargoValidator_Update, cargoController.updateCargo);
 
 /**
  * Rota para deletar um cargo pelo ID.
@@ -51,7 +52,7 @@ router.delete('/cargos/:id', cargoController.deleteCargo);
  * Rota para atualizar o status de um cargo pelo ID.
  * @route PATCH /cargos/:id/status
  */
-router.patch('/cargos/:id/status', cargoController.updateCargoStatus);
+router.patch('/cargos/:id/status', cargoValidator_UpdateStatus, cargoController.updateCargoStatus);
 
 /**
  * Rota para obter cargos pelo status.
