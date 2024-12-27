@@ -29,8 +29,8 @@ export const createCargo = async (req, res) => {
     console.log('Dados recebidos:', req.body);
 
     const { nome, descricao, salarioBase, status } = req.body;
-    if (!nome || !descricao || !salarioBase || !status) {
-      return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+    if (!nome || !salarioBase) {
+      return res.status(400).json({ message: 'Salário e nome são obrigatórios' });
     }
 
     const cargo = await cargoService.createCargo({ nome, descricao, salarioBase, status });
