@@ -3,117 +3,133 @@
  * @since 1.0
  * @version 1.0
  * @see https://github.com/ChacaraKairo/PastelariaCentralERP.git
+ * @date 2024-12-26
  */
 import { PrismaClient } from '@prisma/client';
 
-// Cria uma instância do cliente Prisma para interagir com o banco de dados
+// Criação de uma instância do Prisma Client para se conectar ao banco de dados
 const prisma = new PrismaClient();
 
 /**
- * Função para criar um cargo.
+ * Cria um novo cargo no banco de dados.
  * 
- * Esta função cria um novo cargo no banco de dados com os dados fornecidos.
- * O campo 'descricao' é opcional e será armazenado como 'null' se não fornecido.
- * O campo 'status' também é opcional e, caso não fornecido, será definido como 'ativo' por padrão.
+ * Esta função recebe os dados de um novo cargo e o insere no banco de dados. 
+ * Caso não seja fornecida uma descrição ou um status, o valor padrão será 'null' para a descrição 
+ * e 'ativo' para o status.
  * 
- * @param {Object} req - Objeto da requisição contendo os dados do cargo a ser criado.
- * @param {Object} res - Objeto de resposta utilizado para retornar o status e dados do cargo criado.
- * @returns {Object} - Objeto com os dados do cargo recém-criado.
- * @throws {Error} - Lança erro em caso de falha ao criar o cargo.
+ * @param {Object} params - O objeto contendo os dados do cargo a ser criado.
+ * @param {string} params.nome - O nome do cargo.
+ * @param {string} [params.descricao=null] - A descrição do cargo (opcional).
+ * @param {number} params.salarioBase - O salário base do cargo.
+ * @param {string} [params.status='ativo'] - O status do cargo, que pode ser 'ativo' ou outro (opcional).
+ * 
+ * @returns {Object} - O objeto contendo os dados do cargo recém-criado no banco de dados.
+ * 
+ * @throws {Error} - Lança um erro se houver um problema ao tentar criar o cargo no banco de dados.
  */
-export const createCargo = async (req, res) => {
-  const { nome, descricao, salarioBase, status } = req.body;
+export const createCargo = async ({ nome, descricao, salarioBase, status }) => {
   try {
+    // Cria um cargo no banco de dados utilizando os dados fornecidos
     const cargo = await prisma.cargos.create({
       data: {
         nome,
-        descricao: descricao || null,  // Garantindo que 'descricao' seja 'null' se não fornecido
+        descricao: descricao || null, // Se a descrição não for fornecida, será armazenada como null
         salarioBase,
-        status: status || 'ativo',  // Padrão para 'ativo' se 'status' não fornecido
+        status: status || 'ativo', // Se o status não for fornecido, será armazenado como 'ativo'
       },
     });
-    res.status(201).json(cargo);
+    return cargo;  // Retorna o cargo criado
   } catch (error) {
-    console.error('Erro ao criar cargo:', error);
-    res.status(500).json({ message: 'Falha na criação do cargo' });
+    console.error('Erro ao criar o cargo:', error);
+    throw new Error('Não foi possível criar o cargo. Verifique os dados fornecidos.');
   }
 };
 
 /**
- * Função para obter todos os cargos.
+ * Obtém todos os cargos cadastrados no banco de dados.
  * 
- * Esta função recupera todos os cargos registrados no banco de dados.
+ * Esta função consulta todos os cargos existentes no banco de dados e os retorna. 
+ * Se não houver cargos cadastrados, será lançado um erro.
  * 
- * @param {Object} req - Objeto da requisição.
- * @param {Object} res - Objeto de resposta utilizado para retornar os cargos encontrados.
- * @returns {Array} - Lista de objetos representando todos os cargos.
- * @throws {Error} - Lança erro em caso de falha ao obter os cargos.
+ * @returns {Array} - Uma lista de objetos, cada um representando um cargo no banco de dados.
+ * 
+ * @throws {Error} - Lança um erro se não for possível recuperar os cargos do banco de dados.
  */
-export const getCargos = async (req, res) => {
+export const getCargos = async () => {
   try {
+    // Recupera todos os cargos do banco de dados
     const cargos = await prisma.cargos.findMany();
 
-    // Verificação adicional para garantir que cargos não seja vazio ou undefined
+    // Verifica se não encontrou nenhum cargo
     if (!cargos || cargos.length === 0) {
-      return res.status(404).json({ message: 'Nenhum cargo encontrado' });
+      throw new Error('Nenhum cargo encontrado');
     }
 
-    // Verificação de que cada cargo possui um campo status
+    // Verifica se cada cargo possui um status definido
     cargos.forEach(cargo => {
       if (cargo && !cargo.status) {
         console.warn(`Cargo com ID ${cargo.id} não tem um status definido.`);
       }
     });
 
-    res.status(200).json(cargos);
+    return cargos;  // Retorna a lista de cargos encontrados
   } catch (error) {
-    console.error('Erro ao obter cargos:', error);
-    res.status(500).json({ message: 'Erro ao obter cargos' });
+    console.error('Erro ao obter cargos:', error.message);
+    throw new Error('Erro ao obter cargos');
   }
 };
 
 /**
- * Função para obter um cargo pelo ID.
+ * Obtém um cargo específico a partir do ID fornecido.
  * 
- * Esta função recupera um cargo específico com base no ID fornecido.
+ * Esta função busca um cargo no banco de dados com base no ID fornecido como parâmetro. 
+ * Se o cargo não for encontrado, um erro será lançado.
  * 
- * @param {Object} req - Objeto da requisição, contendo o parâmetro ID do cargo.
- * @param {Object} res - Objeto de resposta utilizado para retornar o cargo encontrado ou mensagem de erro.
- * @returns {Object} - Objeto representando o cargo encontrado.
- * @throws {Error} - Lança erro caso o cargo não seja encontrado ou em caso de falha.
+ * @param {number} id - O ID do cargo que se deseja recuperar.
+ * 
+ * @returns {Object} - O objeto representando o cargo encontrado.
+ * 
+ * @throws {Error} - Lança um erro se o cargo não for encontrado no banco de dados.
  */
-export const getCargoById = async (req, res) => {
-  const { id } = req.params;
+export const getCargoById = async (id) => {
   try {
+    // Busca um cargo único pelo ID no banco de dados
     const cargo = await prisma.cargos.findUnique({
       where: { id: Number(id) },
     });
+
+    // Verifica se o cargo foi encontrado
     if (!cargo) {
-      return res.status(404).json({ message: 'Cargo não encontrado' });
+      throw new Error('Cargo não encontrado');
     }
-    res.status(200).json(cargo);
+
+    return cargo;  // Retorna o cargo encontrado
   } catch (error) {
     console.error('Erro ao obter cargo:', error);
-    res.status(500).json({ message: 'Erro ao obter cargo' });
+    throw new Error('Erro ao obter cargo');
   }
 };
 
 /**
- * Função para atualizar um cargo.
+ * Atualiza os dados de um cargo existente com base no ID fornecido.
  * 
- * Esta função permite atualizar os dados de um cargo existente com base no ID.
- * O campo 'descricao' é opcional e será armazenado como 'null' se não fornecido.
- * O campo 'status' também é opcional e será definido como 'ativo' por padrão.
+ * Esta função permite atualizar os dados de um cargo, incluindo nome, descrição, salário base 
+ * e status. Se a descrição ou status não forem fornecidos, eles receberão valores padrão.
  * 
- * @param {Object} req - Objeto da requisição contendo o ID do cargo e os dados a serem atualizados.
- * @param {Object} res - Objeto de resposta utilizado para retornar o cargo atualizado ou mensagem de erro.
- * @returns {Object} - Objeto com os dados do cargo atualizado.
- * @throws {Error} - Lança erro em caso de falha ao atualizar o cargo.
+ * @param {number} id - O ID do cargo a ser atualizado.
+ * @param {Object} params - O objeto contendo os dados atualizados do cargo.
+ * @param {string} params.nome - O nome do cargo a ser atualizado.
+ * @param {string} [params.descricao=null] - A nova descrição do cargo (opcional).
+ * @param {number} params.salarioBase - O novo salário base do cargo.
+ * @param {string} [params.status='ativo'] - O novo status do cargo, que pode ser 'ativo' ou outro (opcional).
+ * 
+ * @returns {Object} - O objeto contendo os dados do cargo atualizado.
+ * 
+ * @throws {Error} - Lança um erro se houver um problema ao tentar atualizar o cargo no banco de dados.
  */
-export const updateCargo = async (req, res) => {
-  const { id } = req.params;
-  const { nome, descricao, salarioBase, status } = req.body;
+export const updateCargo = async (id, { nome, descricao, salarioBase, status }) => {
   try {
+    // Atualiza o cargo no banco de dados com os dados fornecidos
     const cargo = await prisma.cargos.update({
       where: { id: Number(id) },
       data: {
@@ -123,92 +139,96 @@ export const updateCargo = async (req, res) => {
         status: status || 'ativo',
       },
     });
-    res.status(200).json(cargo);
+    return cargo;  // Retorna o cargo atualizado
   } catch (error) {
     console.error('Erro ao atualizar cargo:', error);
-    res.status(500).json({ message: 'Erro ao atualizar cargo' });
+    throw new Error('Erro ao atualizar cargo');
   }
 };
 
 /**
- * Função para deletar um cargo.
+ * Deleta um cargo do banco de dados com base no ID fornecido.
  * 
- * Esta função remove um cargo do banco de dados com base no ID fornecido.
+ * Esta função remove um cargo do banco de dados. Se o cargo não for encontrado ou se ocorrer 
+ * algum erro durante a exclusão, um erro será lançado.
  * 
- * @param {Object} req - Objeto da requisição contendo o ID do cargo a ser deletado.
- * @param {Object} res - Objeto de resposta utilizado para retornar o cargo deletado ou mensagem de erro.
- * @returns {Object} - Objeto com os dados do cargo deletado.
- * @throws {Error} - Lança erro em caso de falha ao deletar o cargo.
+ * @param {number} id - O ID do cargo a ser deletado.
+ * 
+ * @returns {Object} - O objeto contendo os dados do cargo deletado.
+ * 
+ * @throws {Error} - Lança um erro se o cargo não for encontrado ou se ocorrer um erro durante a exclusão.
  */
-export const deleteCargo = async (req, res) => {
-  const { id } = req.params;
+export const deleteCargo = async (id) => {
   try {
+    // Deleta o cargo do banco de dados com base no ID fornecido
     const cargo = await prisma.cargos.delete({
       where: { id: Number(id) },
     });
-    res.status(200).json(cargo);
+    return cargo;  // Retorna o cargo deletado
   } catch (error) {
     console.error('Erro ao deletar cargo:', error);
-    res.status(500).json({ message: 'Erro ao deletar cargo' });
+    throw new Error('Erro ao deletar cargo');
   }
 };
 
 /**
- * Função para alterar o status de um cargo.
+ * Atualiza o status de um cargo sem removê-lo.
  * 
- * Esta função permite alterar o status de um cargo sem removê-lo.
+ * Esta função permite alterar o status de um cargo existente com base no ID fornecido. 
+ * Se o status não for fornecido, será lançado um erro.
  * 
- * @param {Object} req - Objeto da requisição contendo o ID do cargo e o novo status.
- * @param {Object} res - Objeto de resposta utilizado para retornar o cargo atualizado ou mensagem de erro.
- * @returns {Object} - Objeto com os dados do cargo atualizado.
- * @throws {Error} - Lança erro em caso de falha ao atualizar o status do cargo.
+ * @param {number} id - O ID do cargo a ter o status alterado.
+ * @param {string} status - O novo status do cargo, que pode ser 'ativo', 'inativo', etc.
+ * 
+ * @returns {Object} - O objeto contendo os dados do cargo atualizado.
+ * 
+ * @throws {Error} - Lança um erro se o status não for fornecido ou se ocorrer um erro ao atualizar o cargo.
  */
-export const updateCargoStatus = async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
-
-  // Verificar se o status foi fornecido
+export const updateCargoStatus = async (id, status) => {
   if (!status) {
-    return res.status(400).json({ message: 'Status é obrigatório para atualizar o cargo' });
+    throw new Error('Status é obrigatório para atualizar o cargo');
   }
 
   try {
+    // Atualiza o status do cargo no banco de dados
     const cargo = await prisma.cargos.update({
       where: { id: Number(id) },
       data: { status },
     });
-    res.status(200).json(cargo);
+    return cargo;  // Retorna o cargo atualizado
   } catch (error) {
     console.error('Erro ao atualizar status do cargo:', error);
-    res.status(500).json({ message: 'Erro ao atualizar status do cargo' });
+    throw new Error('Erro ao atualizar status do cargo');
   }
 };
 
 /**
- * Função para obter cargos por status.
+ * Obtém todos os cargos com o status especificado.
  * 
- * Esta função retorna todos os cargos com o status especificado.
+ * Esta função consulta todos os cargos no banco de dados que possuem o status fornecido 
+ * e os retorna. Se não houver cargos com o status fornecido, um erro será lançado.
  * 
- * @param {Object} req - Objeto da requisição contendo o parâmetro 'status' na URL.
- * @param {Object} res - Objeto de resposta utilizado para retornar os cargos encontrados ou mensagem de erro.
- * @returns {Array} - Lista de cargos com o status fornecido.
- * @throws {Error} - Lança erro em caso de falha ao obter cargos.
+ * @param {string} status - O status dos cargos a serem recuperados.
+ * 
+ * @returns {Array} - Uma lista de cargos com o status especificado.
+ * 
+ * @throws {Error} - Lança um erro se não for possível recuperar os cargos com o status fornecido.
  */
-export const getCargosByStatus = async (req, res) => {
-  const { status } = req.params;
+export const getCargosByStatus = async (status) => {
   try {
+    // Recupera todos os cargos com o status fornecido
     const cargos = await prisma.cargos.findMany({
       where: { status },
     });
 
-    // Verificação caso nenhum cargo seja encontrado
+    // Verifica se não encontrou nenhum cargo com o status fornecido
     if (!cargos || cargos.length === 0) {
-      return res.status(404).json({ message: `Nenhum cargo encontrado com o status: ${status}` });
+      throw new Error(`Nenhum cargo encontrado com o status: ${status}`);
     }
 
-    res.status(200).json(cargos);
+    return cargos;  // Retorna os cargos encontrados
   } catch (error) {
     console.error('Erro ao obter cargos:', error);
-    res.status(500).json({ message: 'Erro ao obter cargos' });
+    throw new Error('Erro ao obter cargos');
   }
 };

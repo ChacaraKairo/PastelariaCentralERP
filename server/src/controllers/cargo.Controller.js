@@ -54,13 +54,14 @@ export const createCargo = async (req, res) => {
  */
 export const getCargos = async (req, res) => {
   try {
-    const cargos = await cargoService.getCargos();
+    const cargos = await cargoService.getCargos(); // Aguarda a resolução da Promise
     res.status(200).json(cargos); // Retorna todos os cargos com status 200 (OK)
   } catch (error) {
     console.error('Erro ao obter cargos:', error.message);
     res.status(500).json({ message: 'Erro ao obter cargos' });
   }
 };
+
 
 /**
  * Controlador para obter um cargo pelo ID.

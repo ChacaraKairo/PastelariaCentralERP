@@ -153,3 +153,4 @@ src/ ├── controllers/ # Controladores das APIs ├── entities/ # Defin
 1. npm install --save-dev concurrently
 1. npm cache clean --force
 1. npm install
+   npm install express-validator
