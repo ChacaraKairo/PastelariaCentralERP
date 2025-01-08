@@ -26,7 +26,12 @@ const router = express.Router();
  * Rota para criar uma nova categoria.
  * @route POST /categorias
  */
-router.post('/categorias', categoriaValidator_Create, categoriaController.createCategoria);
+router.post(
+  '/categorias',
+  categoriaValidator_Create,
+  handleValidationErrors,
+  categoriaController.createCategoria
+);
 
 /**
  * Rota para obter todas as categorias.
@@ -38,25 +43,45 @@ router.get('/categorias', categoriaController.getCategorias);
  * Rota para obter uma categoria específica pelo ID.
  * @route GET /categorias/:id
  */
-router.get('/categorias/:id', categoriaController.getCategoriaById);
+router.get(
+  '/categorias/:id',
+  categoriaValidator_GetById,
+  handleValidationErrors,
+  categoriaController.getCategoriaById
+);
 
 /**
  * Rota para obter uma categoria pelo nome.
  * @route GET /categorias/nome/:nome
  */
-router.get('/categorias/nome/:nome', categoriaController.getCategoriaByName);
+router.get(
+  '/categorias/nome/:nome',
+  categoriaValidator_GetByName,
+  handleValidationErrors,
+  categoriaController.getCategoriaByName
+);
 
 /**
  * Rota para atualizar uma categoria pelo ID.
  * @route PUT /categorias/:id
  */
-router.put('/categorias/:id', categoriaValidator_Update, categoriaController.updateCategoria);
+router.put(
+  '/categorias/:id',
+  categoriaValidator_Update,
+  handleValidationErrors,
+  categoriaController.updateCategoria
+);
 
 /**
  * Rota para deletar uma categoria pelo ID.
  * @route DELETE /categorias/:id
  */
-router.delete('/categorias/:id', categoriaController.deleteCategoria);
+router.delete(
+  '/categorias/:id',
+  categoriaValidator_Delete,
+  handleValidationErrors,
+  categoriaController.deleteCategoria
+);
 
 // Exporte o router utilizando exportação ES Module
 export default router;

@@ -164,7 +164,7 @@ export const deleteCargo = async (id) => {
     const cargo = await prisma.cargos.delete({
       where: { id: Number(id) },
     });
-    return cargo;  // Retorna o cargo deletado
+    return cargo;
   } catch (error) {
     console.error('Erro ao deletar cargo:', error);
     throw new Error('Erro ao deletar cargo');

@@ -124,15 +124,15 @@ export const updateCargo = async (req, res) => {
  * @returns {void} - Resposta sem conteúdo em caso de sucesso ou mensagem de erro.
  */
 export const deleteCargo = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    await cargoService.deleteCargo(Number(id));
-    res.status(204).send(); // Retorna status 204 (No Content) após deletar
+    const cargo = await cargoService.deleteCargo(Number(id));
+    res.status(200).json({ message: 'Cargo deletado com sucesso.', cargo });
   } catch (error) {
-    console.error('Erro ao deletar cargo:', error.message);
-    res.status(500).json({ message: 'Erro ao deletar cargo' });
+    res.status(400).json({ error: error.message });
   }
 };
+
 
 /**
  * Controlador para alterar o status de um cargo.
