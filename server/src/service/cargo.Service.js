@@ -57,10 +57,8 @@ export const createCargo = async ({ nome, descricao, salarioBase, status }) => {
  */
 export const getCargos = async () => {
   try {
-    // Recupera todos os cargos do banco de dados
     const cargos = await prisma.cargos.findMany();
 
-    // Verifica se não encontrou nenhum cargo
     if (!cargos || cargos.length === 0) {
       throw new Error('Nenhum cargo encontrado');
     }
