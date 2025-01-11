@@ -30,12 +30,5 @@ export const deleteAllData = async (entidade) => {
   }
 }
 
-export const UpdateStatus = async (entidade) => {
-  const data = await prisma[entidade].updateMany({
-    where: { status: 'ativo' },  // Filtro para registros ativos
-    data: { status: 'excluído' }, // Atualiza o status para "excluído"
-  });
-  return data;
 
-}
 
