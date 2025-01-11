@@ -32,15 +32,3 @@ export const updateCategoria = async (id, { nome, descricao }) => {
     throw new Error('Não foi possível atualizar a categoria. Verifique os dados fornecidos.');
   }
 }
-
-export const deleteCategoria = async (id) => {
-  try {
-    const categoria = await prisma.categorias.delete({
-      where: { id: Number(id) },
-    });
-    return categoria;
-  } catch (error) {
-    console.error('Erro ao deletar a categoria:', error);
-    throw new Error('Não foi possível deletar a categoria.');
-  }
-}

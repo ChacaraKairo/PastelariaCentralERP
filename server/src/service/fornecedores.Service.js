@@ -86,29 +86,3 @@ export const updateFornecedor = async (id, data) => {
     throw new Error('Não foi possível atualizar o fornecedor.');
   }
 };
-
-// Função para deletar um fornecedor
-export const deleteFornecedor = async (id) => {
-  try {
-    if (!id || isNaN(Number(id))) {
-      throw new Error('ID inválido ou não fornecido.');
-    }
-
-    const existingFornecedor = await prisma.fornecedores.findUnique({
-      where: { id: Number(id) },
-    });
-
-    if (!existingFornecedor) {
-      throw new Error(`Fornecedor com ID ${id} não encontrado.`);
-    }
-
-    const fornecedorDeletado = await prisma.fornecedores.delete({
-      where: { id: Number(id) },
-    });
-
-    return fornecedorDeletado;
-  } catch (error) {
-    console.error('Erro ao deletar o fornecedor:', error);
-    throw new Error('Não foi possível deletar o fornecedor.');
-  }
-};

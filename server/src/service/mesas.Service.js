@@ -69,18 +69,3 @@ export const updateStatusMesa = async (id) => {
   }
 };
 
-
-export const deleteMesa = async (id) => {
-  try {
-    const mesa = await prisma.mesas.delete({
-      where: { id: Number(id) },
-    });
-
-    console.log(`Mesa com ID ${id} foi deletada com sucesso.`);
-    return mesa; // Retorna a mesa deletada, caso necessário
-  } catch (error) {
-    console.error(`Erro ao deletar a mesa com ID ${id}:`, error);
-    throw error; // Lança o erro para o chamador
-  }
-};
-

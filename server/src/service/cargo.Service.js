@@ -81,32 +81,6 @@ export const updateCargo = async (id, { nome, descricao, salarioBase, status }) 
     throw new Error('Erro ao atualizar cargo');
   }
 };
-
-/**
- * Deleta um cargo do banco de dados com base no ID fornecido.
- * 
- * Esta função remove um cargo do banco de dados. Se o cargo não for encontrado ou se ocorrer 
- * algum erro durante a exclusão, um erro será lançado.
- * 
- * @param {number} id - O ID do cargo a ser deletado.
- * 
- * @returns {Object} - O objeto contendo os dados do cargo deletado.
- * 
- * @throws {Error} - Lança um erro se o cargo não for encontrado ou se ocorrer um erro durante a exclusão.
- */
-export const deleteCargo = async (id) => {
-  try {
-    // Deleta o cargo do banco de dados com base no ID fornecido
-    const cargo = await prisma.cargos.delete({
-      where: { id: Number(id) },
-    });
-    return cargo;
-  } catch (error) {
-    console.error('Erro ao deletar cargo:', error);
-    throw new Error('Erro ao deletar cargo');
-  }
-};
-
 /**
  * Atualiza o status de um cargo sem removê-lo.
  * 
