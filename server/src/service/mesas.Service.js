@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import create from 'prompt-sync';
 
 const prisma = new PrismaClient();
 
@@ -25,29 +24,6 @@ export const createMesa = async ({ numero, capacidade, descricao }) => {
     throw new Error('Não foi possível criar a mesa.');
   }
 };
-
-export const getMesas = async () => {
-  try {
-    const mesas = await prisma.mesas.findMany();
-    return mesas;
-  } catch (error) {
-    console.error('Erro ao obter as mesas:', error);
-    throw new Error('Não foi possível obter as mesas.');
-  }
-};
-
-export const getMesaById = async (id) => {
-  try {
-    const mesa = await prisma.mesas.findUnique({
-      where: { id: Number(id) },
-    });
-    return mesa;
-  } catch (error) {
-    console.error('Erro ao obter a mesa:', error);
-    throw new Error('Não foi possível obter a mesa.');
-  }
-};
-
 export const updateMesa = async (id, { numero, status, capacidade, descricao }) => {
   try {
     const mesa = await prisma.mesas.update({
@@ -67,35 +43,6 @@ export const updateMesa = async (id, { numero, status, capacidade, descricao }) 
 
   }
 };
-// Função para verificar se a mesa existe
-const getMesa = async (id) => {
-  try {
-    const mesa = await prisma.mesas.findUnique({
-      where: { id: Number(id) },
-    });
-    return mesa;
-  } catch (error) {
-    console.error("Erro ao buscar a mesa:", error);
-    throw error;
-  }
-};
-
-// Função para obter o status da mesa
-export const getStatusmesa = async (id) => {
-  try {
-    const mesa = await getMesa(id);
-
-    if (!mesa) {
-      throw new Error(`Mesa com ID ${id} não encontrada.`);
-    }
-
-    return mesa.status;
-  } catch (error) {
-    console.error("Erro ao buscar o status da mesa:", error);
-    throw error;
-  }
-};
-
 // Função para atualizar o status da mesa
 export const updateStatusMesa = async (id) => {
   try {

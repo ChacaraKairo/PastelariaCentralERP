@@ -17,40 +17,6 @@ export const createCategoria = async ({ nome, descricao }) => {
   }
 }
 
-export const getCategorias = async () => {
-  try {
-    const categorias = await prisma.categorias.findMany();
-    return categorias;
-  } catch (error) {
-    console.error('Erro ao obter as categorias:', error);
-    throw new Error('Não foi possível obter as categorias.');
-  }
-}
-
-export const getCategoriaById = async (id) => {
-  try {
-    const categoria = await prisma.categorias.findUnique({
-      where: { id: Number(id) },
-    });
-    return categoria;
-  } catch (error) {
-    console.error('Erro ao obter a categoria:', error);
-    throw new Error('Não foi possível obter a categoria.');
-  }
-}
-
-export const getCategoriaByName = async (nome) => {
-  try {
-    const categoria = await prisma.categorias.findUnique({
-      where: { nome: nome },
-    });
-    return categoria;
-  } catch (error) {
-    console.error('Erro ao obter a categoria:', error);
-    throw new Error('Não foi possível obter a categoria.');
-  }
-}
-
 export const updateCategoria = async (id, { nome, descricao }) => {
   try {
     const categoria = await prisma.categorias.update({

@@ -25,6 +25,8 @@ import cargoRoutes from './routes/cargoRoutes.js';  // Importa o arquivo de rota
 import categoriasRoutes from './routes/categoriasRoutes.js';  // Importa o arquivo de rotas de categorias
 
 import mesasRoutes from './routes/mesasRoutes.js'
+import fornecedoresRoutes from './routes/fornecedoresRoutes.js'
+import getRoutes from './routes/getRoutes.js'
 
 dotenv.config(); // Carrega as variáveis de ambiente do arquivo .env
 
@@ -47,6 +49,8 @@ app.use((err, req, res, next) => {
 app.use('/api', cargoRoutes); // Prefixando as rotas de cargos com /api/cargos
 app.use('/api', categoriasRoutes);// Prefixando as rotas de categorias com /api/categorias
 app.use('/api', mesasRoutes);
+app.use('/api', fornecedoresRoutes);
+app.use('/api', getRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {

@@ -10,6 +10,7 @@ import { PrismaClient } from '@prisma/client';
 // Criação de uma instância do Prisma Client para se conectar ao banco de dados
 const prisma = new PrismaClient();
 
+
 /**
  * Cria um novo cargo no banco de dados.
  * 
@@ -42,69 +43,6 @@ export const createCargo = async ({ nome, descricao, salarioBase, status }) => {
   } catch (error) {
     console.error('Erro ao criar o cargo:', error);
     throw new Error('Não foi possível criar o cargo. Verifique os dados fornecidos.');
-  }
-};
-
-/**
- * Obtém todos os cargos cadastrados no banco de dados.
- * 
- * Esta função consulta todos os cargos existentes no banco de dados e os retorna. 
- * Se não houver cargos cadastrados, será lançado um erro.
- * 
- * @returns {Array} - Uma lista de objetos, cada um representando um cargo no banco de dados.
- * 
- * @throws {Error} - Lança um erro se não for possível recuperar os cargos do banco de dados.
- */
-export const getCargos = async () => {
-  try {
-    const cargos = await prisma.cargos.findMany();
-
-    if (!cargos || cargos.length === 0) {
-      throw new Error('Nenhum cargo encontrado');
-    }
-
-    // Verifica se cada cargo possui um status definido
-    cargos.forEach(cargo => {
-      if (cargo && !cargo.status) {
-        console.warn(`Cargo com ID ${cargo.id} não tem um status definido.`);
-      }
-    });
-
-    return cargos;  // Retorna a lista de cargos encontrados
-  } catch (error) {
-    console.error('Erro ao obter cargos:', error.message);
-    throw new Error('Erro ao obter cargos');
-  }
-};
-
-/**
- * Obtém um cargo específico a partir do ID fornecido.
- * 
- * Esta função busca um cargo no banco de dados com base no ID fornecido como parâmetro. 
- * Se o cargo não for encontrado, um erro será lançado.
- * 
- * @param {number} id - O ID do cargo que se deseja recuperar.
- * 
- * @returns {Object} - O objeto representando o cargo encontrado.
- * 
- * @throws {Error} - Lança um erro se o cargo não for encontrado no banco de dados.
- */
-export const getCargoById = async (id) => {
-  try {
-    // Busca um cargo único pelo ID no banco de dados
-    const cargo = await prisma.cargos.findUnique({
-      where: { id: Number(id) },
-    });
-
-    // Verifica se o cargo foi encontrado
-    if (!cargo) {
-      throw new Error('Cargo não encontrado');
-    }
-
-    return cargo;  // Retorna o cargo encontrado
-  } catch (error) {
-    console.error('Erro ao obter cargo:', error);
-    throw new Error('Erro ao obter cargo');
   }
 };
 
@@ -200,33 +138,3 @@ export const updateCargoStatus = async (id, status) => {
   }
 };
 
-/**
- * Obtém todos os cargos com o status especificado.
- * 
- * Esta função consulta todos os cargos no banco de dados que possuem o status fornecido 
- * e os retorna. Se não houver cargos com o status fornecido, um erro será lançado.
- * 
- * @param {string} status - O status dos cargos a serem recuperados.
- * 
- * @returns {Array} - Uma lista de cargos com o status especificado.
- * 
- * @throws {Error} - Lança um erro se não for possível recuperar os cargos com o status fornecido.
- */
-export const getCargosByStatus = async (status) => {
-  try {
-    // Recupera todos os cargos com o status fornecido
-    const cargos = await prisma.cargos.findMany({
-      where: { status },
-    });
-
-    // Verifica se não encontrou nenhum cargo com o status fornecido
-    if (!cargos || cargos.length === 0) {
-      throw new Error(`Nenhum cargo encontrado com o status: ${status}`);
-    }
-
-    return cargos;  // Retorna os cargos encontrados
-  } catch (error) {
-    console.error('Erro ao obter cargos:', error);
-    throw new Error('Erro ao obter cargos');
-  }
-};

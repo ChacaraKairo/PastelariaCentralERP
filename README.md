@@ -142,6 +142,7 @@ src/ ├── controllers/ # Controladores das APIs ├── entities/ # Defin
 1. npm install --save-dev nodemon
 1. npm install prisma --save-dev
 1. npm install prisma @prisma/client
+1. npm install -D prisma@latest
 1. npx prisma init
 1. npx prisma db pull
 1. npx prisma migrate dev --name init

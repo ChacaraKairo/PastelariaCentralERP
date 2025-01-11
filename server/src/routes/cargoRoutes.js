@@ -11,54 +11,14 @@ import express from 'express';
 import * as cargoController from '../controllers/cargo.Controller.js';
 import { cargoValidator_Create, cargoValidator_Update, cargoValidator_UpdateStatus } from '../validators/cargoValidator.js';
 
-// Agora você pode acessar as funções via cargoController
-
-
-// Importa o controlador de cargos
-
 const router = express.Router();
 
-/**
- * Rota para criar um novo cargo.
- * @route POST /cargos
- */
+// Rota para criar um novo cargo
 router.post('/cargos', cargoValidator_Create, cargoController.createCargo);
-
-/**
- * Rota para obter todos os cargos.
- * @route GET /cargos
- */
-router.get('/cargos', cargoController.getCargos);
-
-/**
- * Rota para obter um cargo específico pelo ID.
- * @route GET /cargos/:id
- */
-router.get('/cargos/:id', cargoController.getCargoById);
-
-/**
- * Rota para atualizar um cargo pelo ID.
- * @route PUT /cargos/:id
- */
+// Rota para atualizar um cargo pelo ID
 router.put('/cargos/:id', cargoValidator_Update, cargoController.updateCargo);
-
-/**
- * Rota para deletar um cargo pelo ID.
- * @route DELETE /cargos/:id
- */
+// Rota para deletar um cargo pelo ID
 router.delete('/cargos/:id', cargoController.deleteCargo);
-
-/**
- * Rota para atualizar o status de um cargo pelo ID.
- * @route PATCH /cargos/:id/status
- */
+// Rota para atualizar o status de um cargo pelo ID
 router.patch('/cargos/:id/status', cargoValidator_UpdateStatus, cargoController.updateCargoStatus);
-
-/**
- * Rota para obter cargos pelo status.
- * @route GET /cargos/status/:status
- */
-router.get('/cargos/status/:status', cargoController.getCargosByStatus);
-
-// Exporte o router utilizando exportação ES Module
 export default router;
